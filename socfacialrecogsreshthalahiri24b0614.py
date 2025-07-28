@@ -18,26 +18,26 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropou
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.utils import to_categorical
 
-# 1. Load Dataset
+
 df = pd.read_csv("fer2013.csv")
 
-# 2. Convert pixels to arrays
+
 width, height = 48, 48
 df['pixels'] = df['pixels'].apply(lambda x: np.fromstring(x, sep=' '))
 
-# 3. Filter out rows that don't have 2304 pixels
+
 df = df[df['pixels'].apply(lambda x: len(x) == width * height)]
 
-# 4. Stack and reshape
+
 X = np.stack(df['pixels'].values)
 X = X.reshape(-1, width, height, 1).astype('float32') / 255.0
 y = to_categorical(df['emotion'], num_classes=7)
 
-# 2. Split
+
 from sklearn.model_selection import train_test_split
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
-# 3. Data Augmentation
+
 datagen = ImageDataGenerator(
     rotation_range=20,
     zoom_range=0.2,
@@ -47,7 +47,7 @@ datagen = ImageDataGenerator(
 )
 datagen.fit(X_train)
 
-# 4. Build Custom CNN
+
 model = Sequential([
     Conv2D(64, (3,3), activation='relu', padding='same', input_shape=(48,48,1)),
     BatchNormalization(),
@@ -67,15 +67,15 @@ model = Sequential([
     Dense(7, activation='softmax')
 ])
 
-# 5. Compile
+
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-# 6. Train
+
 history = model.fit(datagen.flow(X_train, y_train, batch_size=64),
                     validation_data=(X_val, y_val),
                     epochs=30)
 
-# 7. Plot Accuracy
+
 plt.plot(history.history['accuracy'], label='Train Acc')
 plt.plot(history.history['val_accuracy'], label='Val Acc')
 plt.title('Model Accuracy')
