@@ -1,1 +1,2 @@
 I have uploaded the code for mnist classfication that was given as assignment and also the progress report.
+I have uploaded my code for the final project checkpoint. I have explained the working in the video upload the only issue is that the accuracy I could not get above 70 percent and to do that I have to put in info that I think i am not comfortable with , so I decided to work with what I surely know.
